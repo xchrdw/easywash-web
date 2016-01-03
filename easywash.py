@@ -30,7 +30,7 @@ def main():
 
 def getRoomNumber():
 	parser = argparse.ArgumentParser()
-	parser.add_argument("roomNumber", default=5015)
+	parser.add_argument("roomNumber", nargs='?', default=5015)
 	options = parser.parse_args()
 	return options.roomNumber
 
@@ -120,7 +120,7 @@ def doorText(isOpen, isLocked):
 	return 'zu'
 
 def writeToFile(text, filename):
-	with open(filename, 'w') as f:
+	with open(filename, 'wb') as f:
 		f.write(text.encode('utf-8'))
 
 if __name__ == "__main__":
