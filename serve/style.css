@@ -1,0 +1,40 @@
+body {
+	max-width: 18cm;
+	margin: 1cm auto;
+	text-align: center;
+	font-family: "Ubuntu";
+}
+
+p {
+	margin-bottom: 1.5em;
+}
+
+.machine {
+	display: inline-block;
+	min-width: 3cm;
+	min-height: 2cm;
+	margin: 3mm 2mm;
+	padding: 2mm 3mm;
+	border-radius: 1mm;
+	vertical-align: top;
+	text-align: center;
+	box-shadow: 0 0 1.2mm black, 0 0 15mm rgba(0,0,0,0.15); 
+}
+
+.inUse {
+	background: linear-gradient(rgba(180,0,0,0.15), transparent);
+}
+
+.free {
+	background: linear-gradient(rgba(20,130,0,0.15), transparent);
+}
+
+.error {
+	background: linear-gradient(rgba(0,0,0,0.15), transparent);	
+}
+
+.timeRemaining {
+	font-size: 20pt;
+	margin-top: 0.7em;
+	display: block;
+}
