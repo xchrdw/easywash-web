@@ -58,6 +58,7 @@ def createHtml(room):
 		link(rel='stylesheet', href='style.css', type='text/css')
 		script(src='refresh.js')
 		meta(charset="UTF-8")
+		meta(name="viewport", content="width=device-width, initial-scale=0.75")
 
 	with doc:
 		h1(title)
