@@ -39,14 +39,14 @@ def fetchCurrentState(roomNumber):
 	url = "http://ewnt.schneidereit-trac.com/api"
 
 	authRequest = { "request": { "head": { "credentials": { "user": "api", "pass": "***REMOVED***" }, "requesttype": "authentication" } } }
-	authResult = requests.post(url, json=authRequest, timeout=60)
+	authResult = requests.post(url, json=authRequest, timeout=200)
 	token = authResult.json()["result"]["head"]["credentials"]["token"]
 
 	time.sleep(1) # prevents "ungültiges token" error
 
 	contentRequest = { "request": { "head": { "credentials": { "token": token },
 						"requesttype": "getRaum",  "api": "0.0.1"  },  "body": {  "parameter": {  "raumnr": str(roomNumber) } } } }
-	contentResult = requests.post(url, json=contentRequest, timeout=60)
+	contentResult = requests.post(url, json=contentRequest, timeout=200)
 	return contentResult.json()
 
 def createHtml(room):
