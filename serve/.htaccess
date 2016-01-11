@@ -1,0 +1,5 @@
+ # turn on the module for this directory
+ExpiresActive on
+
+ExpiresDefault "access plus 24 hours"
+ExpiresByType text/html "now"
