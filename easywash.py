@@ -13,9 +13,9 @@ from dominate.tags import *
 
 
 def main():
-	roomNumber, verbose = getRoomNumber()
+	roomNumber, verbose = parseArguments()
 	if verbose:
-		print "fetching room: {}".format(roomNumber)
+		print("fetching room: {}".format(roomNumber))
 	while True:
 		currentState = ""
 		try:
@@ -25,7 +25,7 @@ def main():
 			html = createHtml(currentState['result']['body']['objekt']['raum'])
 			writeToFile(html, "serve/{}.html".format(roomNumber))
 			if verbose:
-				print ".",
+				print(".",)
 				sys.stdout.flush()
 		except:
 			print(time.strftime("%H:%M") + " Exception:---------------------")
@@ -36,7 +36,7 @@ def main():
 		time.sleep(60)
 
 
-def getRoomNumber():
+def parseArguments():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("roomNumber", nargs='?', type=int, default=5015)
 	parser.add_argument("--verbose", dest="verbose", action="store_true")
