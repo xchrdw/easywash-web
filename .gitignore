@@ -1,3 +1,5 @@
 misc/
 android-app/
 serve/*.html
+serve/*.json
+logs/*.log
