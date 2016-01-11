@@ -1,5 +1,5 @@
 #!/usr/bin/python2
-#coding=utf-8
+# coding=utf-8
 
 import requests
 import time
@@ -13,13 +13,20 @@ from dominate.tags import *
 
 
 def main():
-	roomNumber = getRoomNumber()
+	roomNumber, verbose = getRoomNumber()
+	if verbose:
+		print "fetching room: {}".format(roomNumber)
 	while(True):
+		i = 0
 		currentState = ""
 		try:
 			currentState = fetchCurrentState(roomNumber)
+			writeToLog(currentState, "room-{}.log".format(roomNumber))
+			writeToFile(json.dumps(currentState), "serve/{}.json".format(roomNumber))
 			html = createHtml(currentState['result']['body']['objekt']['raum'])
 			writeToFile(html, "serve/{}.html".format(roomNumber))
+			if verbose:
+				print ".",
 		except:
 			print(time.strftime("%H:%M") + " Exception:---------------------")
 			traceback.print_exc(file=sys.stdout)
@@ -28,11 +35,14 @@ def main():
 			sys.stdout.flush()
 		time.sleep(60)
 
+
 def getRoomNumber():
 	parser = argparse.ArgumentParser()
-	parser.add_argument("roomNumber", nargs='?', default=5015)
+	parser.add_argument("roomNumber", nargs='?', type=int, default=5015)
+	parser.add_argument("--verbose", dest="verbose", action="store_true")
 	options = parser.parse_args()
-	return options.roomNumber
+	return options.roomNumber, options.verbose
+
 
 def fetchCurrentState(roomNumber):
 	# adapted from github.com/xchrdw. Thanks to him for reverse-engineering the api!
@@ -48,6 +58,7 @@ def fetchCurrentState(roomNumber):
 						"requesttype": "getRaum",  "api": "0.0.1"  },  "body": {  "parameter": {  "raumnr": str(roomNumber) } } } }
 	contentResult = requests.post(url, json=contentRequest, timeout=200)
 	return contentResult.json()
+
 
 def createHtml(room):
 	title = "Waschmaschinen in " + room["bezeichnung"]
@@ -69,6 +80,7 @@ def createHtml(room):
 
 	return doc.render()
 
+
 def machineHtml(machine):
 	classList = "machine"
 	if machine['fehler'] > 0 or machine['status'] == -1:
@@ -83,27 +95,32 @@ def machineHtml(machine):
 		if machine['waschgang'] > 0:
 			span(str(machine['restzeit']) + u" min", cls="timeRemaining")
 
+
 def machineSummary(machine):
-	machineSummary = ""
-	machineSummary += "Waschmaschine {}".format(machine['mnr'])
-	machineSummary += "\nID: {}".format(machine['id'])
-	machineSummary += "\nStatus: {}".format(statusText(machine['status']))
-	machineSummary += u"\nRestzeit: {} min".format(machine['restzeit'])
-	machineSummary += "\n" + failureText(machine['fehler'])
-	machineSummary += u"\nLetztes Signal: {} Uhr".format(machine['zeitstempel']['date'][11:-7])
-	machineSummary += "\nWaschgang: {}".format(machine['waschgang'])
-	machineSummary += "\nPosition: ({},{},{})".format(machine['positionx'], machine['positiony'], machine['positionz'])
-	machineSummary += u"\nTür {}".format(doorText(machine['tuer'], machine['locked']))
-	machineSummary += "\nProgramm: {}".format(machine['programm'])
-	machineSummary += "\nSolltemperatur: {}".format(machine['solltemperatur'])
-	machineSummary += "\nIsttemperatur: {}".format(machine['isttemperatur'])
-	return machineSummary
+	summary = ""
+	summary += "Waschmaschine {}".format(machine['mnr'])
+	summary += "\nID: {}".format(machine['id'])
+	summary += "\nStatus: {}".format(statusText(machine['status']))
+	summary += u"\nRestzeit: {} min".format(machine['restzeit'])
+	summary += "\n" + failureText(machine['fehler'])
+	summary += u"\nLetztes Signal: {} Uhr".format(machine['zeitstempel']['date'][11:-7])
+	summary += "\nWaschgang: {}".format(machine['waschgang'])
+	summary += "\nPosition: ({},{},{})".format(machine['positionx'], machine['positiony'], machine['positionz'])
+	summary += u"\nTür {}".format(doorText(machine['tuer'], machine['locked']))
+	summary += "\nProgramm: {}".format(machine['programm'])
+	summary += "\nSolltemperatur: {}".format(machine['solltemperatur'])
+	summary += "\nIsttemperatur: {}".format(machine['isttemperatur'])
+	return summary
+
+
+_failureTexts = ['Kein Fehler', u'Türfehler', 'Abflussfehler', 'Zulauffehler',
+				'Aufheizfehler', 'Temperatursensorfehler', 'Motorfehler',
+				'Balancefehler', u'Überlauffehler']
+
 
 def failureText(failureInt):
-	failureTexts = ['Kein Fehler', u'Türfehler', 'Abflussfehler', 'Zulauffehler',
-	                'Aufheizfehler', 'Temperatursensorfehler', 'Motorfehler', 
-	                'Balancefehler', u'Überlauffehler']
-	return failureTexts[failureInt]
+	return _failureTexts[failureInt]
+
 
 def statusText(statusInt):
 	if statusInt == -1:
@@ -112,6 +129,8 @@ def statusText(statusInt):
 		return "Aus"
 	if statusInt == 1:
 		return "An"
+	raise RuntimeError("invalid status: {}".format(statusInt))
+
 
 def doorText(isOpen, isLocked):
 	if isLocked:
@@ -120,9 +139,17 @@ def doorText(isOpen, isLocked):
 		return 'auf'
 	return 'zu'
 
+
 def writeToFile(text, filename):
 	with open(filename, 'wb') as f:
 		f.write(text.encode('utf-8'))
+
+
+def writeToLog(currentState, filename):
+	with open(filename, 'a') as f:
+		t = time.strftime("%Y-%m-%d %H:%M:%S")
+		f.write("{},{}\n".format(t,json.dumps(currentState)))
+
 
 if __name__ == "__main__":
 	main()
