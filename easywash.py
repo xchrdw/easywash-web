@@ -17,7 +17,6 @@ def main():
 	if verbose:
 		print "fetching room: {}".format(roomNumber)
 	while(True):
-		i = 0
 		currentState = ""
 		try:
 			currentState = fetchCurrentState(roomNumber)
@@ -27,6 +26,7 @@ def main():
 			writeToFile(html, "serve/{}.html".format(roomNumber))
 			if verbose:
 				print ".",
+				sys.stdout.flush()
 		except:
 			print(time.strftime("%H:%M") + " Exception:---------------------")
 			traceback.print_exc(file=sys.stdout)
