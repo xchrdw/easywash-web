@@ -1,1 +1,1 @@
-setTimeout(function() {location.reload(); }, 20000);
+setTimeout(function() {location.href = location.href; }, 20000);
