@@ -16,11 +16,11 @@ def main():
 	roomNumber, verbose = getRoomNumber()
 	if verbose:
 		print "fetching room: {}".format(roomNumber)
-	while(True):
+	while True:
 		currentState = ""
 		try:
 			currentState = fetchCurrentState(roomNumber)
-			writeToLog(currentState, "room-{}.log".format(roomNumber))
+			writeToLog(currentState, "logs/{}-room-{}.log".format(time.strftime("%Y-%m-%d"), roomNumber))
 			writeToFile(json.dumps(currentState), "serve/{}.json".format(roomNumber))
 			html = createHtml(currentState['result']['body']['objekt']['raum'])
 			writeToFile(html, "serve/{}.html".format(roomNumber))
@@ -52,16 +52,18 @@ def fetchCurrentState(roomNumber):
 	authResult = requests.post(url, json=authRequest, timeout=200)
 	token = authResult.json()["result"]["head"]["credentials"]["token"]
 
-	time.sleep(1) # prevents "ungültiges token" error
+	time.sleep(1)  # prevents "ungültiges token" error
 
-	contentRequest = { "request": { "head": { "credentials": { "token": token },
-						"requesttype": "getRaum",  "api": "0.0.1"  },  "body": {  "parameter": {  "raumnr": str(roomNumber) } } } }
+	contentRequest = {"request": {"head": {"credentials": {"token": token},
+										   "requesttype": "getRaum",
+										   "api": "0.0.1"},
+								  "body": {"parameter": {"raumnr": str(roomNumber)}}}}
 	contentResult = requests.post(url, json=contentRequest, timeout=200)
 	return contentResult.json()
 
 
 def createHtml(room):
-	title = "Waschmaschinen in " + room["bezeichnung"]
+	title = "Waschmaschinen in {}".format(room["bezeichnung"])
 
 	doc = dominate.document(title=title)
 
@@ -73,9 +75,9 @@ def createHtml(room):
 
 	with doc:
 		h1(title)
-		p(time.strftime("%H:%M") + u" Uhr aktualisiert")
+		p(u"{} Uhr aktualisiert".format(time.strftime("%H:%M")))
 		for machine in room['maschinen']:
-			if(machine['typ'] == "Waschmaschine"):
+			if machine['typ'] == "Waschmaschine":
 				machineHtml(machine)
 
 	return doc.render()
