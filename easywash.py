@@ -79,6 +79,8 @@ def createHtml(room):
 		for machine in room['maschinen']:
 			if machine['typ'] == "Waschmaschine":
 				machineHtml(machine)
+		p(u"Diese Seite wird von Studenten als inoffizielle Alternative zur EasyWash-App betrieben und ist kein Teil des Angebots von Schneidereit GmbH. Alle Angaben ohne Gewähr.", 
+			cls="disclaimer")
 
 	return doc.render()
 
