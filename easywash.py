@@ -110,11 +110,11 @@ def machineSummary(machine):
 	summary += '\n' + failureText(machine['fehler'])
 	summary += '\nLetztes Signal: {} Uhr'.format(machine['zeitstempel']['date'][11:-7])
 	summary += '\nWaschgang: {}'.format(machine['waschgang'])
-	summary += '\nPosition: ({},{},{})'.format(machine['positionx'], machine['positiony'], machine['positionz'])
-	summary += '\nTür {}'.format(doorText(machine['tuer'], machine['locked']))
 	summary += '\nProgramm: {}'.format(programText(machine['programm']))
-	summary += '\nSolltemperatur: {}'.format(machine['solltemperatur'])
-	summary += '\nIsttemperatur: {}'.format(machine['isttemperatur'])
+	summary += '\nPosition: ({},{},{})'.format(machine['positionx'], machine['positiony'], machine['positionz'])
+	#summary += '\nTür {}'.format(doorText(machine['tuer'], machine['locked']))
+	#summary += '\nSolltemperatur: {}'.format(machine['solltemperatur'])
+	#summary += '\nIsttemperatur: {}'.format(machine['isttemperatur'])
 	return summary
 
 
