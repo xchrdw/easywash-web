@@ -3,6 +3,7 @@
 
 import requests
 import time
+import datetime
 import json
 import os
 import sys
@@ -97,7 +98,7 @@ def machineHtml(machine):
 	mouseoverText = machineSummary(machine)
 	with div(cls=classList, title=mouseoverText):
 		if machine['waschgang'] > 0:
-			span(str(machine['restzeit']) + u" min", cls="timeRemaining")
+			span(u"{} min".format(remainingTime(machine)), cls="timeRemaining")
 
 
 def machineSummary(machine):
@@ -143,6 +144,36 @@ def doorText(isOpen, isLocked):
 		return 'auf'
 	return 'zu'
 
+def remainingTime(machine):
+	if machine['restzeit'] > 100:
+		return programDuration(machine['programm']) - timestamp_age(machine['zeitstempel']['date'][:-7])
+	return machine['restzeit']
+
+def timestamp_age(timestring):
+	timestamp = datetime.datetime.strptime(timestring, '%Y-%m-%d %H:%M:%S')
+	diff = datetime.datetime.now() - timestamp
+	return round(diff.total_seconds() / 60)
+
+_programDurations = {5: 70,
+					 6: 60,
+					 7: 55,
+					10: 26}
+
+def programDuration(program):
+	if program in _programDurations.keys():
+		return _programDurations[program]
+	return 100
+
+_programTexts = {5: u'Koch 90°',
+				 6: u'Normal 60°',
+				 7: u'Normal 40°',
+				10: u'Fein 30°',
+				11: u'Wolle 30°'}
+
+def programText(programInt):
+	if programInt in _programTexts.keys():
+		return _programTexts[programInt]
+	return str(programInt)
 
 def writeToFile(text, filename):
 	with open(filename, 'wb') as f:
