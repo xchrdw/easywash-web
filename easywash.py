@@ -105,7 +105,7 @@ def machineSummary(machine):
 	summary = ''
 	summary += 'Waschmaschine {}'.format(machine['mnr'])
 	summary += '\nID: {}'.format(machine['id'])
-	summary += '\nStatus: {}'.format(statusText(machine['status']))
+	#summary += '\nStatus: {}'.format(statusText(machine['status']))
 	summary += '\nRestzeit: {} min'.format(machine['restzeit'])
 	summary += '\n' + failureText(machine['fehler'])
 	summary += '\nLetztes Signal: {} Uhr'.format(machine['zeitstempel']['date'][11:-7])
