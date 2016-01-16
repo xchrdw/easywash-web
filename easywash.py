@@ -1,6 +1,7 @@
 #!/usr/bin/python2
 # coding=utf-8
 
+from __future__ import print_function
 import requests
 import time
 import datetime
@@ -26,7 +27,7 @@ def main():
 			html = createHtml(currentState['result']['body']['objekt']['raum'])
 			writeToFile(html, "serve/{}.html".format(roomNumber))
 			if verbose:
-				print(".",)
+				print(".", end="")
 				sys.stdout.flush()
 		except:
 			print(time.strftime("%H:%M") + " Exception:---------------------")
@@ -112,7 +113,7 @@ def machineSummary(machine):
 	summary += "\nWaschgang: {}".format(machine['waschgang'])
 	summary += "\nPosition: ({},{},{})".format(machine['positionx'], machine['positiony'], machine['positionz'])
 	summary += u"\nTür {}".format(doorText(machine['tuer'], machine['locked']))
-	summary += "\nProgramm: {}".format(machine['programm'])
+	summary += "\nProgramm: {}".format(programText(machine['programm']))
 	summary += "\nSolltemperatur: {}".format(machine['solltemperatur'])
 	summary += "\nIsttemperatur: {}".format(machine['isttemperatur'])
 	return summary
