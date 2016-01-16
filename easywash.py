@@ -1,6 +1,7 @@
 #!/usr/bin/python2
 # coding=utf-8
 
+from __future__ import print_function
 import requests
 import time
 import json
@@ -25,7 +26,7 @@ def main():
 			html = createHtml(currentState['result']['body']['objekt']['raum'])
 			writeToFile(html, "serve/{}.html".format(roomNumber))
 			if verbose:
-				print(".",)
+				print(".", end="")
 				sys.stdout.flush()
 		except:
 			print(time.strftime("%H:%M") + " Exception:---------------------")
@@ -143,16 +144,16 @@ def doorText(isOpen, isLocked):
 		return 'auf'
 	return 'zu'
 
-_programTexts = {5: 'Koch 90°',
-				 6: 'Normal 60°',
-				 7: 'Normal 40°',
-				10: 'Fein 30°',
-				11: 'Wolle 30°'}
+_programTexts = {5: u'Koch 90°',
+				 6: u'Normal 60°',
+				 7: u'Normal 40°',
+				10: u'Fein 30°',
+				11: u'Wolle 30°'}
 
 def programText(programInt):
 	if programInt in _programTexts.keys():
 		return _programTexts[programInt]
-	return programInt
+	return str(programInt)
 
 def writeToFile(text, filename):
 	with open(filename, 'wb') as f:
