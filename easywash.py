@@ -146,10 +146,10 @@ def doorText(isOpen, isLocked):
 
 def remainingTime(machine):
 	if machine['restzeit'] > 100:
-		return programDuration(machine['programm']) - timestamp_age(machine['zeitstempel']['date'][:-7])
+		return programDuration(machine['programm']) - timestampAge(machine['zeitstempel']['date'][:-7])
 	return machine['restzeit']
 
-def timestamp_age(timestring):
+def timestampAge(timestring):
 	timestamp = datetime.datetime.strptime(timestring, '%Y-%m-%d %H:%M:%S')
 	diff = datetime.datetime.now() - timestamp
 	return round(diff.total_seconds() / 60)
