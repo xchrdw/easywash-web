@@ -146,7 +146,7 @@ def doorText(isOpen, isLocked):
 
 def remainingTime(machine):
 	if machine['restzeit'] > 100:
-		return programDuration(machine['programm']) - timestampAge(machine['zeitstempel']['date'][:-7])
+		return max(0, programDuration(machine['programm']) - timestampAge(machine['zeitstempel']['date'][:-7]))
 	return machine['restzeit']
 
 def timestampAge(timestring):
@@ -157,7 +157,8 @@ def timestampAge(timestring):
 _programDurations = {5: 70,
 					 6: 60,
 					 7: 55,
-					10: 26}
+					10: 26,
+					11: 30}
 
 def programDuration(program):
 	if program in _programDurations.keys():
