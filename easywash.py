@@ -111,7 +111,7 @@ def machineSummary(machine):
 	summary += "\nWaschgang: {}".format(machine['waschgang'])
 	summary += "\nPosition: ({},{},{})".format(machine['positionx'], machine['positiony'], machine['positionz'])
 	summary += u"\nTür {}".format(doorText(machine['tuer'], machine['locked']))
-	summary += "\nProgramm: {}".format(machine['programm'])
+	summary += "\nProgramm: {}".format(programText(machine['programm']))
 	summary += "\nSolltemperatur: {}".format(machine['solltemperatur'])
 	summary += "\nIsttemperatur: {}".format(machine['isttemperatur'])
 	return summary
@@ -143,6 +143,16 @@ def doorText(isOpen, isLocked):
 		return 'auf'
 	return 'zu'
 
+_programTexts = {5: 'Koch 90°',
+				 6: 'Normal 60°',
+				 7: 'Normal 40°',
+				10: 'Fein 30°',
+				11: 'Wolle 30°'}
+
+def programText(programInt):
+	if programInt in _programTexts.keys():
+		return _programTexts[programInt]
+	return programInt
 
 def writeToFile(text, filename):
 	with open(filename, 'wb') as f:
