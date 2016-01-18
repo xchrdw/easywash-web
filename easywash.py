@@ -85,11 +85,14 @@ def createHtml(room):
 
 	return doc.render()
 
+MAX_TIMESTAMP_AGE = 60*6
 
 def machineHtml(machine):
 	classList = 'machine'
 	if machine['fehler'] > 0 or machine['status'] == -1:
 		classList += ' error'
+	elif timestampAge(machine) > MAX_TIMESTAMP_AGE:
+		classList += ' error noSignal'
 	else:
 		if machine['waschgang'] > 0:
 			classList += ' inUse'
@@ -108,7 +111,10 @@ def machineSummary(machine):
 	#summary += '\nStatus: {}'.format(statusText(machine['status']))
 	summary += '\nRestzeit: {} min'.format(machine['restzeit'])
 	summary += '\n' + failureText(machine['fehler'])
-	summary += '\nLetztes Signal: {} Uhr'.format(machine['zeitstempel']['date'][11:-7])
+	if timestampAge(machine) < MAX_TIMESTAMP_AGE:
+		summary += '\nLetztes Signal: {} Uhr'.format(machine['zeitstempel']['date'][11:-7])
+	else:
+		summary += '\nLetztes Signal: {}'.format(machine['zeitstempel']['date'][:-7])
 	summary += '\nWaschgang: {}'.format(machine['waschgang'])
 	summary += '\nProgramm: {}'.format(programText(machine['programm']))
 	summary += '\nPosition: ({},{},{})'.format(machine['positionx'], machine['positiony'], machine['positionz'])
@@ -146,10 +152,11 @@ def doorText(isOpen, isLocked):
 
 def remainingTime(machine):
 	if machine['restzeit'] > 100:
-		return max(0, programDuration(machine['programm']) - timestampAge(machine['zeitstempel']['date'][:-7]))
+		return max(0, programDuration(machine['programm']) - timestampAge(machine))
 	return machine['restzeit']
 
-def timestampAge(timestring):
+def timestampAge(machine):
+	timestring = machine['zeitstempel']['date'][:-7]
 	timestamp = datetime.datetime.strptime(timestring, '%Y-%m-%d %H:%M:%S')
 	diff = datetime.datetime.now() - timestamp
 	return round(diff.total_seconds() / 60)
