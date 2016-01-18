@@ -85,7 +85,7 @@ def createHtml(room):
 
 	return doc.render()
 
-MAX_TIMESTAMP_AGE = 60*6
+MAX_TIMESTAMP_AGE = 60*36 #assume a machine is broken if it didn’t wash in 36 hours
 
 def machineHtml(machine):
 	classList = 'machine'
