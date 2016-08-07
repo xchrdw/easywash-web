@@ -1,4 +1,4 @@
-#!/usr/bin/env python3 
+#!/usr/bin/env python3
 # coding=utf-8
 
 import requests
@@ -80,7 +80,7 @@ def createHtml(room):
 		for machine in room['maschinen']:
 			if machine['typ'] == 'Waschmaschine':
 				machineHtml(machine)
-		p('Diese Seite wird von Studenten als inoffizielle Alternative zur EasyWash-App betrieben und ist kein Teil des Angebots von Schneidereit GmbH. Alle Angaben ohne Gewähr.', 
+		p('Diese Seite wird von Studenten als inoffizielle Alternative zur EasyWash-App betrieben und ist kein Teil des Angebots von Schneidereit GmbH. Alle Angaben ohne Gewähr.',
 			cls='disclaimer')
 
 	return doc.render()
@@ -151,9 +151,12 @@ def doorText(isOpen, isLocked):
 	return 'zu'
 
 def remainingTime(machine):
-	if machine['restzeit'] > 100:
-		return max(0, programDuration(machine['programm']) - timestampAge(machine))
-	return machine['restzeit']
+	restzeit = machine['restzeit']
+	if currentTimezoneOffset() == -120:
+		restzeit -= 60
+	if restzeit > 100:
+		restzeit = programDuration(machine['programm']) - timestampAge(machine)
+	return max(0, restzeit)
 
 def timestampAge(machine):
 	timestring = machine['zeitstempel']['date'][:-7]
@@ -171,6 +174,12 @@ def programDuration(program):
 	if program in _programDurations.keys():
 		return _programDurations[program]
 	return 100
+
+def currentTimezoneOffset():
+	import time
+	import calendar
+	offsetSeconds = calendar.timegm(time.gmtime()) - calendar.timegm(time.localtime())
+	return round(offsetSeconds/60)
 
 _programTexts = {5: 'Koch 90°',
 				 6: 'Normal 60°',
