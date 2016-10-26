@@ -1,5 +1,6 @@
-misc/
-android-app/
 serve/*.html
 serve/*.json
 logs/*.log
+env/
+__pycache__/
+credentials.py

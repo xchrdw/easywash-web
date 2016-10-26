@@ -11,7 +11,7 @@ import traceback
 import dominate
 import argparse
 from dominate.tags import *
-
+from credentials import user, api_key
 
 def main():
 	roomNumber, verbose = parseArguments()
@@ -49,7 +49,7 @@ def fetchCurrentState(roomNumber):
 	# adapted from github.com/xchrdw. Thanks to him for reverse-engineering the api!
 	url = 'http://ewnt.schneidereit-trac.com/api'
 
-	authRequest = { 'request': { 'head': { 'credentials': { 'user': 'api', 'pass': '***REMOVED***' }, 'requesttype': 'authentication' } } }
+	authRequest = { 'request': { 'head': { 'credentials': { 'user': user, 'pass': api_key }, 'requesttype': 'authentication' } } }
 	authResult = requests.post(url, json=authRequest, timeout=200)
 	token = authResult.json()['result']['head']['credentials']['token']
 
