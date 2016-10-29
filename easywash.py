@@ -86,8 +86,6 @@ def createHtml(room):
 			else:
 				dryers.append(machine)
 		if washingMachines:
-			if dryers:
-				h2('Waschmaschinen')
 			for machine in washingMachines:
 				machineHtml(machine)
 		if dryers:
@@ -116,7 +114,7 @@ def machineHtml(machine):
 			classList += ' free'
 	mouseoverText = machineSummary(machine)
 	with div(cls=classList, title=mouseoverText):
-		span(machineName(machine))
+		span(machine['mnr'], cls="machine-id")
 		if machine['waschgang'] > 0:
 			span('{} min'.format(remainingTime(machine)), cls='timeRemaining')
 
