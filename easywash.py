@@ -77,15 +77,31 @@ def createHtml(room):
 	with doc:
 		h1(title)
 		p('{} Uhr aktualisiert'.format(time.strftime('%H:%M')))
+
+		washingMachines = []
+		dryers = []
 		for machine in room['maschinen']:
 			if machine['typ'] == 'Waschmaschine':
+				washingMachines.append(machine)
+			else:
+				dryers.append(machine)
+		if washingMachines:
+			if dryers:
+				h2('Waschmaschinen')
+			for machine in washingMachines:
+				machineHtml(machine)
+		if dryers:
+			h2('Trockner')
+			for machine in dryers:
 				machineHtml(machine)
 		p('Diese Seite wird von Studenten als inoffizielle Alternative zur EasyWash-App betrieben und ist kein Teil des Angebots von Schneidereit GmbH. Alle Angaben ohne Gewähr.',
 			cls='disclaimer')
 
 	return doc.render()
 
+
 MAX_TIMESTAMP_AGE = 60*36 #assume a machine is broken if it didn’t wash in 36 hours
+
 
 def machineHtml(machine):
 	classList = 'machine'
@@ -100,13 +116,14 @@ def machineHtml(machine):
 			classList += ' free'
 	mouseoverText = machineSummary(machine)
 	with div(cls=classList, title=mouseoverText):
+		span(machineName(machine))
 		if machine['waschgang'] > 0:
 			span('{} min'.format(remainingTime(machine)), cls='timeRemaining')
 
 
 def machineSummary(machine):
 	summary = ''
-	summary += 'Waschmaschine {}'.format(machine['mnr'])
+	summary += machineName(machine)
 	summary += '\nID: {}'.format(machine['id'])
 	#summary += '\nStatus: {}'.format(statusText(machine['status']))
 	summary += '\nRestzeit: {} min'.format(machine['restzeit'])
@@ -122,6 +139,10 @@ def machineSummary(machine):
 	#summary += '\nSolltemperatur: {}'.format(machine['solltemperatur'])
 	#summary += '\nIsttemperatur: {}'.format(machine['isttemperatur'])
 	return summary
+
+
+def machineName(machine):
+	return '{} {}'.format(machine['typ'], machine['mnr'])
 
 
 _failureTexts = ['Kein Fehler', 'Türfehler', 'Abflussfehler', 'Zulauffehler',
