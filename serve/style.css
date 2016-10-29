@@ -21,6 +21,11 @@ p {
 	box-shadow: 0 0 1.2mm black, 0 0 15mm rgba(0,0,0,0.15); 
 }
 
+.machine-id {
+	float: right;
+	color: #666;
+}
+
 .inUse {
 	background: linear-gradient(rgba(180,0,0,0.15), transparent);
 }
